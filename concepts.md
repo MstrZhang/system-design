@@ -40,7 +40,7 @@ adding more servers (adding more nodes to a system)
 - cons:
   - some sort of management / orchestration is required to maintain and run workloads concurrently
   - higher initial costs
-    - adding new servers is more expensive than upgrading new ones
+    - adding new servers is more expensive than upgrading existing ones
 
 ---
 
@@ -322,3 +322,120 @@ cons:
     - makes read / write incredibly fast
   - used as a primary database in some applications (e.g. twitter)
 - memcached
+
+---
+
+## availability vs consistency
+
+a distributed system can only guarantee supporting two of the following 3 guidelines in the **CAP theorem**:
+
+- **consistency**: every read receives the most recent write or an error
+- **availability**: every read receives a response (non-error response) but no guarantee that it is the most recent version
+- **partition tolerance**: the system continues to operate despite an arbitrary number of messages being dropped (or delayed) in the event of a network failure
+
+we need to make a software tradeoff between consistency and availbility:
+
+- **CP** (optimizing for consistency)
+
+  - good choice if the system requires atomic reads and writes (i.e. order of operations matters)
+  - waiting for a response might result in a timeout error
+  - system going down is tolerable but out of date / out of sync data is not an option
+  - examples:
+    - banking operations (e.g. stripe, square, paypal)
+
+- **AP** (optimizing for availibility)
+  - good choice if business needs to allow for **eventual consistency**
+  - good for when the system needs to continue to work despite external errors
+  - typically measured as uptime or reliability
+    - critical for systems that provide mission critical services or handle sensitive data
+  - system going down is not an option but not up to date data is tolerable
+  - examples:
+    - social media (e.g. twitter, facebook reddit)
+
+### consistency patterns
+
+a **consistency pattern** is a set of techniques that can be used to achieve consistency in a distributed system
+
+**weak consistency**: after a write, reads may or may not see it; best effort approach is taken
+
+- tolerable in situations where data loss is not detrimental
+- examples:
+  - voip, video chat: we may drop some frames or lose a connection and not hear or see what's happening
+  - multiplayer games: you might lag out and lose your connection
+
+**eventual consistency**: after a write, reads will see it (typically within milliseconds); data is replicated async
+
+- if no new updates are made to a given data item, eventually all accesses to that item will return the last updated value
+- examples:
+  - shopping application: a user may see an item that is not on sale and a sale gets added; after a refresh, the user will see the sale on the item
+  - email: a user has some emails in their inbox; after an email gets sent, the user eventually gets the email in their inbox
+  - dns: a DNS doesn't necessarily reflect latest values and it takes some time to replicate modified values to all DNS clients and servers
+
+**strong consistency**: after a write all reads will see it; data is replicated synchronously
+
+- works well in systems that require strict transactions
+- examples:
+  - RDBMS (**relational database management system**): transaction order is very important so the database will lock transactions from occurring when writes are occurring
+  - payment platforms: transfer of funds is important and requires synchronous operation of atomic procedures
+
+### availability patterns
+
+an **availibility pattern** is a set of techniques that can be used to achieve availibility in a distributed system. there are two complementary patterns to support high availibility being **fail-over** and **replication**
+
+**fail-over**: if the system detects one node has failed, it responds by passing its duties to a different active node
+
+- two main types of fail-over:
+  1. **active-passive**: each node sends its health (e.g. heartbeat) to a main server; if the heartbeat dies, a passive server will take over the active server's IP address and resume service
+  - length of downtime is determined whether the passive server is **hot** or **cold**
+    - **cold start**: time for a passive server to start up and configure itself before it can start receiving requests
+  - only the active server will handle traffic; the passive server just waits until the event of a failure
+  - sometimes referred to as **master-slave failover**
+  2. **active-active**: both servers are managing traffic but spread the load amongst themselves
+  - in the event of a failure, the failed servers responsibilities are passed to the other server
+    - this eliminates the cold start problem since the other server is already hot
+    - avoids the issue of needing expensive passive servers that are idle most of the time
+- cons of fail-over:
+  - adds more hardware and additional complexity
+  - there is a potential loss for data if the active system fails before any newly written data can be replicated to the passive server
+
+**replication**: act of creating and / or maintaining multiple copies of data (generally database data)
+
+- two main types of replication:
+  1. **master-slave**: master writes to one or more slaves; slaves only serve reads
+  - in the event of master failing, the system transitions to read-only mode
+    - one of the slaves is promoted to be the new master
+  - slaves are replicated in a tree-like fashion
+  - cons:
+    - additional logic is required to promote a slave to be a master
+  2. **master-master**: multiple masters serve both reads and writes; if either master goes down, the system can continue to operate on the other master
+  - cons:
+    - you need a load balancer or application logic changes to split the work across the system
+    - most master-master systems are loosely consistent (violating ACID) or have increased write latency due to synchronization
+    - conflict resolution becomes a bigger problem as more write nodes are added
+- cons of replication:
+  - there is a potential loss of data if master fails before any newly written data can be replicated
+  - writes are replayed to read replicas
+    - if there are a lot of writes, the read replicas can get slowed down
+    - the more read slaves you have, the more you have to replicate (results in greater replication lag)
+  - in some systems, writing to master can spawn multiple threads to write in parallel
+  - adds additional hardware and additional complexity
+
+availability is often quantified in uptime (or downtime) as a percentage of time the service is available. generally represented as a percentage with some number of 9s:
+
+**99.9% - three 9s**
+
+| duration  | acceptable downtime |
+| --------- | ------------------- |
+| per year  | 8h 45min 57s        |
+| per month | 43m 49.7s           |
+| per week  | 10m 4.8s            |
+| per day   | 1m 26.4s            |
+
+**99.99% - four 9s**
+
+| duration  | acceptable downtime |
+| --------- | ------------------- |
+| per year  | 52 min 35.7s        |
+| per month | 4m 23s              |
+| per week  | 1m 5s               |
+| per day   | 8.6s                |
