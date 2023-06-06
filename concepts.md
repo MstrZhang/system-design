@@ -439,3 +439,59 @@ availability is often quantified in uptime (or downtime) as a percentage of time
 | per month | 4m 23s              |
 | per week  | 1m 5s               |
 | per day   | 8.6s                |
+
+---
+
+## content delivery network
+
+a **content delivery network** (CDN) is a globally distributed network of proxy servers that serve content from locations closer to the users
+
+key points:
+
+- typically serves static files
+  - e.g. HTML, CSS, JS, photos, videos, ...
+  - some CDNs (e.g. Amazon CloudFront) support dynamic content
+- a site's DNS resolution will tell clients which server to contact
+
+- pros:
+  - users receive content from data centers close to them
+    - increased speed
+  - eases load on the server
+    - the server doesn't need to serve requests that the CDN fulfills
+- cons:
+  - CDN cost could be significant depending on the traffic
+  - content might be stale if it is updated before the TTL expires
+  - CDNs require changing URLs for static content to point to the CDN
+    - additional overhead
+
+### types of CDNs
+
+**push CDN**: receives new content whenever changes happen on the server
+
+key points:
+
+- good for sites with a small amount of traffic
+- good for sites that do not need to update their content very often
+  - minimizes traffic but maximizes storage
+- content is placed on the CDN once it is made
+
+- cons:
+  - you take full responsibility for providing content, uploading to the CDN, and rewriting the URLs to point to the CDN
+    - additional overhead
+
+**pull CDN**: grabs new content from the server when the user first requests content
+
+key points:
+
+- content is left on the server and you rewrite URLs to point to the CDN
+  - results in a slower request until the content gets cached on the CDN
+  - will need to add TTL flags to ensure that the CDN flushes stale data regularly
+  - minimizes storage but can create redundant traffic if files expires and are pulled before they have been changed
+- good for sites with heavy traffic
+
+  - traffic is spread out more evenly with only recently-requested content remaining on the CDN
+
+- cons:
+  - CDN costs could be significant depending on traffic
+    - this is often outweighed over the costs you would incur if you weren't using a CDN at all
+  - content might be stale if its updated before the TTL expires it
