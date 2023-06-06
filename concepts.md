@@ -245,6 +245,75 @@ cons:
 - can be more difficult to implement
 - may incur an extra load on the cache if all keys are refreshed at the same time
 
+### cache eviction policies
+
+a **cache eviction policy** is a strategy to decide which elements to remove first from a cache and manage hot data in a cache
+
+**first-in-first-out (FIFO)**: remove the element that was first added to the cache
+
+pros:
+
+- easy to implement (using a queue)
+- does not need to modify cache data at all
+  - does not care about timestamp; solely evicts based on entry order
+- very predictable and no starvation
+  - items will eventually be replaced even if they are infrequently used
+
+cons:
+
+- unfairness
+  - treats all cache elements equally so it may evict cache elements that are of high use
+  - doesn't consider elements that may be needed to be used again in the future
+
+**most recently used (MRU)**: remove the most recently accessed item from the cache first
+
+idea:
+
+- if you've just seen an item, it's a good indicator that you're unlikely to see the same thing again soon
+- analogy:
+  - imagine you are at a bus stop watching buses
+  - you see the #36 bus come to the stop, pick up passengers and leave
+  - it is likely that you will not see the #36 bus soon in contrast to other buses that will stop there
+
+cons:
+
+- quite inefficient if elements tend to stay frequently accessed over time (e.g. a top hits list)
+- less data efficient than some other caching policies
+  - needs to store a timestamp
+
+**least frequently used (LFU)**: remove the item that has the lowest number of accesses first
+
+pros:
+
+- more data efficient compared to MRU
+  - stores only a counter and not an entire timestamp
+
+cons:
+
+- can lead to stale data if item is initially frequently used and then usage drops off
+
+**least recently used (LRU)**: remove the item that was accessed last from the cache
+
+pros:
+
+- this is similar to FIFO but takes into account timestamp
+  - FIFO solely accounts for entry order whereas LRU takes into account usage statistics (i.e. timestamp)
+- uses memory more efficiently
+  - replaces elements that haven't been used for a long time
+  - pages that are rarely used or not important are more likely to be swapped out
+- relatively simple to implement
+  - decent balance between complexity and performance
+
+cons:
+
+- requires cache updating
+  - after a cache hit, the element needs to be updated with a new timestamp
+- performs poorly in some cases:
+  - example:
+    - some elements are accessed occasionally but consistently
+    - some elements are accessed very frequently for a short period and then never again
+      - this data can become stale
+
 ### cache tools
 
 - redis
