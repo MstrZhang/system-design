@@ -85,3 +85,85 @@ i'm going to say something a little controversial
 unless you're interviewing at FAANG or Big-N or unless your interviewer brings it up, i don't think it's necessary to do back of the envelope calculations. i think if you've spent a lot of time talking about design you will have most likely filled up all the time in your interview and there won't realistically be any time to do this
 
 a lot of these calculations are based on assumptions and just memorized numbers. again, this is a much more frequent topic for backend, dev ops, or data engineers (less so for frontend)
+
+---
+
+## the leetcode template
+
+templates are a great way of approaching problems. depending on the company you're interviewing at, sometimes getting "somewhere" is good enough and templates allow you to at least build yourself a foundation even if you're totally lost
+
+time for each section is variable depending on the problem and how much time you're allotted for the interview (this time is allocated for roughly under an hour here)
+
+### feature expectations (5 mins)
+
+1. use cases
+2. scenarios that will not be covered
+3. who will use this application
+4. how many people will use this application
+5. usage patterns
+
+### estimations (5 mins)
+
+i would do this at a really high level with rough numbers (or no numbers at all) but this depends on how senior of a role you're applying for
+
+1. throughput (queries per second (**qps**) for read / write queries)
+2. latency expected from the system (for read and write queries)
+3. read / write ratio
+4. traffic estimates
+
+- writes (qps, volume of data)
+- read (qps, volume of data)
+
+5. storage estimates
+6. memory estimates
+
+- if we are using a cache, what kind of data we want to store in the cache
+- how much RAM and how many machines do we need for us to achieve this
+- amount of data you want to store in the disk / ssd
+
+### design goals (5 mins)
+
+1. latency and throughput requirements
+2. consistency vs availability (weak / strong / eventual => **consistency** vs failure / replication => **availability**)
+
+### high level design (5 to 10 mins)
+
+1. APIs for read / write for crucial components
+2. database schema
+3. basic algorithm
+4. high level design for read / write scenario
+
+### deep dive (15 to 20 mins)
+
+1. scaling the algorithm
+2. scaling individual components
+
+- availbility, consistency, and scale story for each component
+- consistency and availbility patterns
+
+3. think about the following components and how they would fit in / help
+
+- DNS
+- CDN
+- load balancers
+- reverse proxy
+- application layer scaling
+- database (RDBMS vs NoSQL)
+- caching
+  - caching patterns
+  - eviction policies
+- asynchronism
+  - message queues
+  - task queues
+  - back pressure
+- communication
+  - TCP
+  - UDP
+  - REST
+  - RPC
+
+### justify (5 mins)
+
+1. throughput of each layer
+2. latency caused by each layer
+3. overall latency justification
