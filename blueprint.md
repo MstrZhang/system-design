@@ -138,8 +138,8 @@ i would do this at a really high level with rough numbers (or no numbers at all)
 1. scaling the algorithm
 2. scaling individual components
 
-- availbility, consistency, and scale story for each component
-- consistency and availbility patterns
+- availability, consistency, and scale story for each component
+- consistency and availability patterns
 
 3. think about the following components and how they would fit in / help
 

@@ -6,37 +6,37 @@ the coverage of the topics under the data section can vary heavily depending on 
 
 considerations for choosing between nosql and relational:
 
-| relational                                                     | nosql                              |
-| -------------------------------------------------------------- | ---------------------------------- |
-| strucured data                                                 | semi structured data               |
-| strict schema                                                  | dynamic or flexible schema         |
-| relational data                                                | non relational data                |
-| need for complex joins                                         | no need for complex joins          |
-| transactions                                                   | store tons of data (i.e. TB or PB) |
-| clear patterns for scaling                                     | very data intensive workload       |
-| more establised: developers, community, code, tooling, etc ... | very high throughput for IOPS      |
-| lookups by index are very fast                                 |                                    |
+| relational                                                      | nosql                              |
+| --------------------------------------------------------------- | ---------------------------------- |
+| structured data                                                 | semi structured data               |
+| strict schema                                                   | dynamic or flexible schema         |
+| relational data                                                 | non relational data                |
+| need for complex joins                                          | no need for complex joins          |
+| transactions                                                    | store tons of data (i.e. TB or PB) |
+| clear patterns for scaling                                      | very data intensive workload       |
+| more established: developers, community, code, tooling, etc ... | very high throughput for IOPS      |
+| lookups by index are very fast                                  |                                    |
 
 data that is well suited for nosql:
 
-- rapid ingest of clickstream and log data
+- rapid ingest of click-stream and log data
 - leaderboard or scoring data
 - temporary data such as a shopping cart
 - frequently accessed (hot) tables
 - metadata / lookup tables
 
-### relational databse (RDBMS)
+### relational database (RDBMS)
 
 organizes a collection of data items into tables. typically accessed using a query language like SQL
 
 **ACID**: set of properties that describe relational database transactions; all DBMSs guarantee ACID
 
 - **atomicity**: each transaction is all or nothing
-- **consistency**: any transaction will bring the databse from one valid state to another
-- **isolation**: executing transactions concurrently has the seame results as if they were executed serially
-- **duarbility**: once a transaction has been committed, it remains so
+- **consistency**: any transaction will bring the database from one valid state to another
+- **isolation**: executing transactions concurrently has the same results as if they were executed serially
+- **durability**: once a transaction has been committed, it remains so
 
-methods to scale a relational databse:
+methods to scale a relational database:
 
 **master-slave replication**: see [availability patterns](./concepts.md#availability-patterns)
 
@@ -58,7 +58,7 @@ methods to scale a relational databse:
 **sharding**: distributes data across different databases; each database only manages a subset of the data
 
 - example:
-  - a users databse is split up alphabetically by name
+  - a users database is split up alphabetically by name
     - as number of users increases, more shards are added to the cluster
 - pros:
   - results in less read and write traffic
@@ -153,9 +153,9 @@ strategies of denormalization:
 cons:
 
 - data is duplicated
-- constraints can help redundant copies of informations stay in sync
+- constraints can help redundant copies of information stay in sync
   - increases the complexity of the database design
-- a denormalized database under heavy write load might perform worse than its normalized couterpart
+- a denormalized database under heavy write load might perform worse than its normalized counterpart
 
 **sql tuning**: techniques to optimize your database; this is a really broad topic so there are a lot of topics under this
 
@@ -207,7 +207,7 @@ key points:
 
 - centered around documents (e.g. XML, JSON, binary, etc ...)
   - document stores all information for a given object
-- typically provides APIs or a query language based on the internal structure of the document itsefl
+- typically provides APIs or a query language based on the internal structure of the document itself
 - organized by collections, tags, metadata, or directories
 
 examples:

@@ -52,7 +52,7 @@ load balancers distribute a set of tasks over a set of resources:
   - makes the overall processing more efficient as it splits the work across multiple loads
   - helps with horizontal scaling
 - load balancers themselves can be bottlenecks if they aren't configured properly / if they don't have enough resources
-  - a single load balancer is a singple point of failure
+  - a single load balancer is a single point of failure
 - analogy:
   - you can think of the load balancer as a "traffic cop" that handles the requests (like cars in a city) and directs where they can go (like the roads they point to)
 
@@ -123,7 +123,7 @@ cons:
     +--------+         +-------+
         ^
         |  2. on miss, query the database and update the cache
-        |     (cache never communicates with the databse)
+        |     (cache never communicates with the database)
         |
         |              +----------+
         +------------->| database |
@@ -136,7 +136,7 @@ process:
   - on cache hit, cache returns the result
   - on cache miss
     - client calls the database
-    - database resturns the result
+    - database returns the result
     - result gets added to the cache (e.g. LIFO)
     - result is returned
 
@@ -146,7 +146,7 @@ cons:
   1. client calls cache and misses and cache returns cache miss
   2. client calls database and database returns result
   3. client calls cache again to update cache
-- data can become stale if it is updated in the databse
+- data can become stale if it is updated in the database
   - e.g. a cached value can't be updated since it can't communicate with the database
   - this can be mitigated with a TTL (**time to live**) flag
 - new nodes start off empty which increases the latency
@@ -333,7 +333,7 @@ a distributed system can only guarantee supporting two of the following 3 guidel
 - **availability**: every read receives a response (non-error response) but no guarantee that it is the most recent version
 - **partition tolerance**: the system continues to operate despite an arbitrary number of messages being dropped (or delayed) in the event of a network failure
 
-we need to make a software tradeoff between consistency and availbility:
+we need to make a software tradeoff between consistency and availability:
 
 - **CP** (optimizing for consistency)
 
@@ -343,7 +343,7 @@ we need to make a software tradeoff between consistency and availbility:
   - examples:
     - banking operations (e.g. stripe, square, paypal)
 
-- **AP** (optimizing for availibility)
+- **AP** (optimizing for availability)
   - good choice if business needs to allow for **eventual consistency**
   - good for when the system needs to continue to work despite external errors
   - typically measured as uptime or reliability
@@ -380,7 +380,7 @@ a **consistency pattern** is a set of techniques that can be used to achieve con
 
 ### availability patterns
 
-an **availibility pattern** is a set of techniques that can be used to achieve availibility in a distributed system. there are two complementary patterns to support high availibility being **fail-over** and **replication**
+an **availability pattern** is a set of techniques that can be used to achieve availability in a distributed system. there are two complementary patterns to support high availability being **fail-over** and **replication**
 
 **fail-over**: if the system detects one node has failed, it responds by passing its duties to a different active node
 
