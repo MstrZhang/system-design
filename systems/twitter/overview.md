@@ -31,6 +31,8 @@ out of scope:
 - analytics
 - recommended feed
 - verified users feed
+- follow service
+  - this is pretty straightforward and not very interesting
 
 ## constraints and assumptions
 
