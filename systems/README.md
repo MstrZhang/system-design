@@ -12,7 +12,6 @@ the best way of studying for these is to study the broad concepts and try to rea
 
 ## todo
 
-- uber (logistics platform)
 - web crawler
 - stripe (payments platform)
 - top n list (common e-commerce platform problem)
